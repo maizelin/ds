@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>啟動中 — 糖尿病共照網儀表板</title>
+  <script src="https://cdn.jsdelivr.net/npm/fhirclient/build/fhir-client.js"></script>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #0f172a;
+      font-family: system-ui, sans-serif;
+      color: #94a3b8;
+    }
+    .box { text-align: center; }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid #1e293b;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    p { font-size: 14px; margin: 4px 0; }
+    .sub { font-size: 12px; color: #475569; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="spinner"></div>
+    <p>正在啟動 SMART 授權流程...</p>
+    <p class="sub">Initializing OAuth2 + PKCE</p>
+  </div>
+  <script>
+    FHIR.oauth2.authorize({
+      client_id: "cc344727-6f90-496c-94fd-c7829aa9a51d",
+      scope: "launch patient/*.read openid fhirUser profile",
+      redirect_uri: "https://vtr-asia.github.io/index.html",
+      // PKCE 由 fhirclient.js 自動處理
+      pkce: true
+    }).catch(function(err) {
+      document.body.innerHTML =
+        '<div style="color:#f87171;text-align:center;padding:40px">' +
+        '<p style="font-size:18px">啟動失敗</p>' +
+        '<p style="font-size:13px;font-family:monospace">' + err.message + '</p>' +
+        '</div>';
+    });
+  </script>
+</body>
+</html>
